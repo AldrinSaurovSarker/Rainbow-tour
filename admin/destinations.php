@@ -19,8 +19,8 @@
         }
     
         if (!empty($_FILES['images']['name'][0])) {
-            if (!file_exists($DESTINATION_IMAGE_URL)) {
-                mkdir($DESTINATION_IMAGE_URL, 0777, true);
+            if (!file_exists($DESTINATION_IMAGE_UPLOAD_DIR)) {
+                mkdir($DESTINATION_IMAGE_UPLOAD_DIR, 0777, true);
             }
 
             foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
@@ -60,8 +60,8 @@
         }
 
         if (!empty($_FILES['images']['name'][0])) {
-            if (!file_exists($DESTINATION_IMAGE_URL)) {
-                mkdir($DESTINATION_IMAGE_URL, 0777, true);
+            if (!file_exists($DESTINATION_IMAGE_UPLOAD_DIR)) {
+                mkdir($DESTINATION_IMAGE_UPLOAD_DIR, 0777, true);
             }
 
             foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
