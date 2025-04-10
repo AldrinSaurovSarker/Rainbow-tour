@@ -7,6 +7,12 @@
 
     <?php
         $item = isset($_GET['item']) ? htmlspecialchars($_GET['item']) : '';
+
+        if ($item == '') {
+            header('Location: destinations.php');
+            exit;
+        }
+
         $item = mysqli_real_escape_string($conn, $item);
 
         $query_string ="SELECT d.*, dg.image
@@ -19,6 +25,17 @@
                         WHERE d.name = '$item'";
 
         $destination = mysqli_fetch_object(mysqli_query($conn, $query_string));
+    ?>
+
+    <?php
+        if (empty($destination)) {
+            ?>
+            <div class="not-found display-2 fw-bold">
+                Page not found!
+            </div>
+            <?php
+            exit;
+        }
     ?>
 
     <div class="hero-container d-flex align-items-center justify-content-center text-center text-white"

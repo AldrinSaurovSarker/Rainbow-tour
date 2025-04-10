@@ -128,7 +128,7 @@ CREATE TABLE destination_packages (
 CREATE TABLE destinations_gallery (
     id INT AUTO_INCREMENT PRIMARY KEY,
     destination_id INT NOT NULL,
-    image VARCHAR(1000) NOT NULL,
+    image VARCHAR(2048) NOT NULL,
     FOREIGN KEY (destination_id) REFERENCES destinations(id)
 );
 
