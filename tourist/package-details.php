@@ -1,6 +1,7 @@
-<?php 
-    include 'auth/connect-session.php';
-    include 'db/connect-db.php';
+<?php
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php';
+    include ROOT_PATH . 'db/connect-db.php';
+    include ROOT_PATH .'auth/connect-session.php';
 
     $package_id = $_GET['id'] ?? ''; 
     $query_package = "SELECT * FROM tour_packages WHERE id = '$package_id'";
@@ -30,15 +31,15 @@
                 echo "<script>alert('There was an error adding your comment. Please try again.');</script>";
             }
         } else {
-            header("Location: ./auth/login.php");
+            header("Location: " . BASE_URL . "auth/login.php");
         }
     }
     
-    include 'template/header.php';
+    include ROOT_PATH . 'template/header.php';
 ?>
 
 <body>
-    <?php include 'template/navigation.php'; ?>
+    <?php include ROOT_PATH . 'template/navigation.php'; ?>
 
     <div class="container package-container mt-4">
         <div class="row">
@@ -84,7 +85,7 @@
                         if ($result_destinations && mysqli_num_rows($result_destinations) > 0) {
                             while ($destination = mysqli_fetch_assoc($result_destinations)) {
                                 $destination_name = $destination['name'];
-                                $gallery_url = $destination['image'];
+                                $gallery_url = BASE_URL . $destination['image'];
                                 echo '
                                 <div class="col-lg-4 col-md-6 d-flex justify-content-center my-3">
                                     <a href="destination-details.php?item='.urlencode($destination_name).'" class="text-decoration-none">
@@ -96,7 +97,7 @@
                                 </div>';
                             }
                         } else {
-                            echo '<div class="col-12 text-center"><h5>No destinations found!</h5></div>';
+                            echo '<p>This package covers no destination</p>';
                         }
                     ?>
                 </div>
@@ -200,20 +201,23 @@
                                            ORDER BY s.start_date";
                     
                         $schedules = mysqli_query($conn, $schedule_query);
-                    ?>
 
-                    <?php while ($row = mysqli_fetch_assoc($schedules)): 
-                        $start_date = new DateTime($row['start_date']);
-                        $end_date = new DateTime($row['end_date']);
-                        $today = new DateTime();
-                        $interval = $today->diff($start_date)->days;
-                        $countdown = ($interval == 1) ? "Tomorrow" : (($interval == 0) ? "Today" : "$interval days left");
-
-                        $booking_query = "SELECT COUNT(id) AS booked_count FROM bookings WHERE schedule_id = " . $row['id'];
-                        $booking_result = mysqli_query($conn, $booking_query);
-                        $booking_row = mysqli_fetch_assoc($booking_result);
-                        $availability = $row['capacity'] - $booking_row['booked_count'];
-                    ?>
+                        if (mysqli_num_rows($schedules) === 0) {
+                            echo "<p>No upcoming schedules</p>";
+                        } else {
+                            while ($row = mysqli_fetch_assoc($schedules)) {
+                                $start_date = new DateTime($row['start_date']);
+                                $end_date = new DateTime($row['end_date']);
+                                $today = new DateTime();
+                                $interval = $today->diff($start_date)->days;
+                                $countdown = ($interval == 1) ? "Tomorrow" : (($interval == 0) ? "Today" : "$interval days left");
+    
+                                $booking_query = "SELECT COUNT(id) AS booked_count FROM bookings WHERE schedule_id = " . $row['id'];
+                                $booking_result = mysqli_query($conn, $booking_query);
+                                $booking_row = mysqli_fetch_assoc($booking_result);
+                                $availability = $row['capacity'] - $booking_row['booked_count'];
+                        ?>
+                        
                         <div class="col-md-4 mb-4">
                             <div class="card shadow-lg">
                                 <div class="card-header text-white text-center fw-bold py-3" style="background-color: #007bff; font-size: 1.2rem;">
@@ -311,28 +315,21 @@
 
                                                 <button type="submit" class="btn btn-success w-100">Confirm</button>
                                             </form>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <?php endwhile; ?>
+                    <?php }}?>
                 </div>
 
                 <div class="row mt-4">
                     <div class="col-12">
-                        <h2 style="font-size: 1.25rem;">Add a Comment</h2>
+                        <h2 style="font-size: 1.25rem;">Rate this package</h2>
+                        <p>Tell others what you think</p>
+                        
                         <form method="POST" action="">
                             <div class="mb-3">
-                                <label for="comment" class="form-label" style="font-size: 0.875rem;">Your
-                                    Comment</label>
-                                <textarea id="comment" name="comment" class="form-control" rows="3" required
-                                    style="font-size: 0.875rem;"></textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="rating" class="form-label" style="font-size: 0.875rem;">Rating</label>
                                 <div class="rating">
                                     <input type="radio" id="star5" name="rating" value="5" />
                                     <label for="star5"><i class="fas fa-star"></i></label>
@@ -349,6 +346,12 @@
                                     <input type="radio" id="star1" name="rating" value="1" required />
                                     <label for="star1"><i class="fas fa-star"></i></label>
                                 </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="comment" class="form-label" style="font-size: 0.875rem;">Your
+                                    Comment</label>
+                                <textarea id="comment" name="comment" class="form-control" rows="3" placeholder="Describe your experience (optional)"></textarea>
                             </div>
 
                             <input type="hidden" name="package_id" value="<?php echo $package_id; ?>">
@@ -394,7 +397,7 @@
                                         </div>';
                                     }
                                 } else {
-                                    echo '<div class="col-12 text-center py-5"><h5>No reviews yet!</h5></div>';
+                                    echo '<p class="pb-5">No reviews yet!</p>';
                                 }
                             ?>
                         </div>
@@ -404,5 +407,5 @@
         </div>
     </div>
 
-    <?php include 'template/footer.php'; ?>
+    <?php include ROOT_PATH . 'template/footer.php'; ?>
 </body>

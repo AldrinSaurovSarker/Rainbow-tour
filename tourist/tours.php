@@ -1,6 +1,7 @@
-<?php include 'template/header.php'; ?>
-<?php include 'db/connect-db.php'; ?>
-<?php include 'auth/connect-session.php'; ?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
+<?php include ROOT_PATH . 'db/connect-db.php'; ?>
+<?php include ROOT_PATH . 'auth/connect-session.php'; ?>
 
 <?php 
     $selected_destination    = $_GET['destination'] ?? ''; 
@@ -13,7 +14,7 @@
 ?>
 
 <body>
-    <?php include 'template/navigation.php'; ?>
+    <?php include ROOT_PATH . 'template/navigation.php'; ?>
 
     <div class="container-fluid">
         <div class="row">
@@ -180,5 +181,5 @@
         </div>
     </div>
 
-    <?php include 'template/footer.php'; ?>
+    <?php include ROOT_PATH . 'template/footer.php'; ?>
 </body>

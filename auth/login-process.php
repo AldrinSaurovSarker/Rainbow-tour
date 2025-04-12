@@ -1,6 +1,7 @@
 <?php
-    include '../db/connect-db.php';
-    include '../auth/connect-session.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php';
+    include ROOT_PATH . 'db/connect-db.php';
+    include ROOT_PATH . 'auth/connect-session.php';
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = mysqli_real_escape_string($conn, $_POST['email']);
@@ -22,7 +23,7 @@
             $user = mysqli_fetch_assoc($tourist_result);
             if (password_verify($password, $user['password'])) {
                 $_SESSION['user'] = $user['email'];
-                header("Location: ../index.php");
+                header("Location: " . BASE_URL . "tourist/index.php");
                 exit();
             } else {
                 $_SESSION['error'] = "Invalid password.";
@@ -35,7 +36,7 @@
             $staff = mysqli_fetch_assoc($staff_result);
             if (password_verify($password, $staff['password'])) {
                 $_SESSION['user'] = $staff['email'];
-                header("Location: ../admin/dashboard.php");
+                header("Location: " . BASE_URL . "admin/dashboard.php");
                 exit();
             } else {
                 $_SESSION['error'] = "Invalid password.";

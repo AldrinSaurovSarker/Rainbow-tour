@@ -1,12 +1,13 @@
 <?php
-    include 'db/connect-db.php';
-    include 'auth/connect-session.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php';
+    include ROOT_PATH . 'db/connect-db.php';
+    include ROOT_PATH . 'auth/connect-session.php';
 
     $schedule_id = $_POST['schedule_id'];
     $tourist_id = $_POST['tourist_id'] ?? '';
 
     if (empty($tourist_id)) {
-        header("Location: ./auth/login.php");
+        header("Location: " . BASE_URL . "auth/login.php");
         exit;
     }
 

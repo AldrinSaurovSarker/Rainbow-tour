@@ -1,7 +1,7 @@
-<?php include '../template/header.php'; ?>
-<?php include '../db/connect-db.php'; ?>
-<?php include '../auth/connect-session.php'; ?>
-<?php include '../constants.php'; ?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
+<?php include ROOT_PATH . 'db/connect-db.php'; ?>
+<?php include ROOT_PATH . 'auth/connect-session.php'; ?>
 
 <?php
     if (isset($_POST['add_destination'])) {
@@ -108,7 +108,6 @@
 
 <head>
     <link href="admin-style.css" rel="stylesheet" />
-    <link href="../images/banners/icon.png" rel="icon">
 </head>
 
 <body class="bg-info">
@@ -247,7 +246,7 @@
                                                     <div class="d-flex flex-wrap gap-2">
                                                         <?php while ($img = $images->fetch_assoc()): ?>
                                                             <div class="position-relative" style="width: 80px;">
-                                                                <img src="../<?= htmlspecialchars($img['image']) ?>" class="img-thumbnail" style="width: 100%; height: 80px; object-fit: cover;">
+                                                                <img src="<?= BASE_URL ?><?= htmlspecialchars($img['image']) ?>" class="img-thumbnail" style="width: 100%; height: 80px; object-fit: cover;">
                                                                 <a href="?delete_image=<?= $img['image'] ?>&dest_id=<?= $row['id'] ?>" 
                                                                 onclick="return confirm('Delete this image?')" 
                                                                 class="btn-close position-absolute top-0 end-0 bg-white rounded-circle p-1 shadow-sm" 

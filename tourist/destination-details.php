@@ -1,9 +1,10 @@
-<?php include 'template/header.php'; ?>
-<?php include 'db/connect-db.php'; ?>
-<?php include 'auth/connect-session.php'; ?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
+<?php include ROOT_PATH . 'db/connect-db.php'; ?>
+<?php include ROOT_PATH . 'auth/connect-session.php'; ?>
 
 <body>
-    <?php include 'template/navigation.php'; ?>
+    <?php include ROOT_PATH . 'template/navigation.php'; ?>
 
     <?php
         $item = isset($_GET['item']) ? htmlspecialchars($_GET['item']) : '';
@@ -40,7 +41,7 @@
 
     <div class="hero-container d-flex align-items-center justify-content-center text-center text-white"
         style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
-           url('<?php echo $destination->image; ?>') center/cover no-repeat;">
+           url('<?= BASE_URL ?><?php echo $destination->image; ?>') center/cover no-repeat;">
         <div class="hero-content">
             <h1 class="display-3 fw-bold"><?php echo $item; ?></h1>
         </div>
@@ -65,8 +66,8 @@
 
                         while ($row = mysqli_fetch_object($query)) {
                             echo '<div class="col-md-4 mb-3">
-                                    <a href="' . htmlspecialchars($row->image) . '" target="_blank">
-                                        <img src="' . htmlspecialchars($row->image) . '" class="img-fluid rounded" alt="' . '">
+                                    <a href="' . BASE_URL . htmlspecialchars($row->image) . '" target="_blank">
+                                        <img src="' . BASE_URL . htmlspecialchars($row->image) . '" class="img-fluid rounded" alt="' . '">
                                     </a>
                                 </div>';
                         }
@@ -120,5 +121,5 @@
         </div>
     </div>
 
-    <?php include 'template/footer.php'; ?>
+    <?php include ROOT_PATH . 'template/footer.php'; ?>
 </body>

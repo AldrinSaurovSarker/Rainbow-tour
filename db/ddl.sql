@@ -6,7 +6,7 @@ CREATE TABLE tourists (
     name VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL,
     nid VARCHAR(20) UNIQUE NOT NULL,
-    image VARCHAR(1000) NULL,
+    image VARCHAR(2048) NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(20) NOT NULL,
     dob DATE NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE tourists (
 CREATE TABLE tour_packages (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    image VARCHAR(1000) NULL,
+    image VARCHAR(2048) NULL,
     duration_in_days INT NOT NULL,
     price DECIMAL(10,2) NOT NULL
 );

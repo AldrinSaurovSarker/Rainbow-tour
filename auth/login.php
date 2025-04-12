@@ -1,10 +1,7 @@
-<?php include '../template/header.php'; ?>
-<?php include '../db/connect-db.php'; ?>
-<?php include '../auth/connect-session.php'; ?>
-
-<head>
-    <link href="../images/banners/icon.png" rel="icon">
-</head>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
+<?php include ROOT_PATH . 'db/connect-db.php'; ?>
+<?php include ROOT_PATH . 'auth/connect-session.php'; ?>
 
 <body class="d-flex align-items-center justify-content-center vh-100 login-cover" style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
                 url('../images/destinations/maldives.jpg') center/cover no-repeat;">

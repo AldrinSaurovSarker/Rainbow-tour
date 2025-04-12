@@ -1,9 +1,10 @@
 <?php
-    include 'db/connect-db.php';
-    include 'auth/connect-session.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php';
+    include ROOT_PATH . 'db/connect-db.php';
+    include ROOT_PATH . 'auth/connect-session.php';
 
     if (!isset($_SESSION['user'])) {
-        header("Location: " . BASE_URL . "auth/login.php");
+        header("Location: login.php");
         exit();
     }
 
@@ -13,7 +14,7 @@
     $user = mysqli_fetch_assoc($result);
 
     if (!$user) {
-        header("Location: " . BASE_URL . "auth/login.php");
+        header("Location: login.php");
         exit();
     }
 
@@ -39,14 +40,14 @@
     }
 ?>
 
-<?php include 'template/header.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
 
 <body class="profile">
-    <?php include 'template/navigation.php'; ?>
+    <?php include ROOT_PATH . 'template/navigation.php'; ?>
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card shadow-lg p-4">
+                <div class="p-4">
                     <h3 class="text-center mb-4">Booked Tours</h3>
                     <?php
                         $userId = $user['id']; 
@@ -78,18 +79,16 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-12">
-                                        <div class="card mb-2">
-                                            <div class="card shadow-lg mb-4">
-                                                <div class="card-body">
-                                                    <h3 class="card-title text-center text-primary mb-3"><?php echo $packageName; ?></h3>
-                                                    <p><strong>Start Date:</strong> <?php echo $startDate; ?></p>
-                                                    <p><strong>End Date:</strong> <?php echo $endDate; ?></p>
-                                                    <p><strong>Number of Participants:</strong> <?php echo $persons; ?></p>
-                                                    <p><strong>Booking Date:</strong> <?php echo $timestamp; ?></p>
-                                                    <p><strong>Payment Status:</strong> <?php echo $paymentStatus; ?></p>
-                                                    <p><strong>Amount:</strong> <?php echo $amount; ?> TK</p>
-                                                    <a href="package-details.php?id=<?php echo $packageId; ?>" class="btn btn-primary w-100 mt-3">View Details</a>
-                                                </div>
+                                        <div class="card shadow-lg mb-4">
+                                            <div class="card-body">
+                                                <h3 class="card-title text-center text-primary mb-3"><?php echo $packageName; ?></h3>
+                                                <p><strong>Start Date:</strong> <?php echo $startDate; ?></p>
+                                                <p><strong>End Date:</strong> <?php echo $endDate; ?></p>
+                                                <p><strong>Number of Participants:</strong> <?php echo $persons; ?></p>
+                                                <p><strong>Booking Date:</strong> <?php echo $timestamp; ?></p>
+                                                <p><strong>Payment Status:</strong> <?php echo $paymentStatus; ?></p>
+                                                <p><strong>Amount:</strong> <?php echo $amount; ?> TK</p>
+                                                <a href="<?= BASE_URL ?>tourist/package-details.php?id=<?php echo $packageId; ?>" class="btn btn-primary w-100 mt-3">View Details</a>
                                             </div>
                                         </div>
                                     </div>
@@ -100,62 +99,75 @@
                         } else {
                             echo '<p class="text-center">You have no booked tours.</p>';
                         }
-                        ?>
+                    ?>
                 </div>
             </div>
 
             <div class="col-md-4">
                 <div class="card shadow-lg p-4">
-                    <h3 class="text-center mb-4">Profile Information</h3>
+                    <div class="text-center mb-4 position-relative">
+                        <div class="profile-picture-container mx-auto mb-3 position-relative" style="width: 150px; height: 150px;">
+                            <img 
+                                src="<?php echo !empty($user['image']) ? BASE_URL . $user['image'] : BASE_URL . 'images/banners/default-user.png'; ?>" 
+                                alt="Profile Picture" 
+                                class="rounded-circle border border-3 shadow" 
+                                style="width: 100%; height: 100%; object-fit: cover;"
+                            >
+                            <div class="upload-overlay d-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); opacity: 0; transition: 0.3s; cursor: pointer;">
+                                Upload Photo
+                                <input type="file" name="profile_image" class="position-absolute w-100 h-100" style="opacity: 0; cursor: pointer;" onchange="this.form.submit()">
+                            </div>
+                        </div>
+                        <h3 class="fw-bold">Profile Information</h3>
+                    </div>
 
                     <?php if (isset($_SESSION['success'])): ?>
                         <div class="alert alert-success">
-                            <?php echo $_SESSION['success']; ?>
+                            <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
                         </div>
-                        <?php unset($_SESSION['success']); ?>
                     <?php endif; ?>
 
                     <?php if (isset($_SESSION['error'])): ?>
                         <div class="alert alert-danger">
-                            <?php echo $_SESSION['error']; ?>
+                            <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
                         </div>
-                        <?php unset($_SESSION['error']); ?>
                     <?php endif; ?>
 
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label fw-semibold">Name</label>
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo $user['name']; ?>" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="nid" class="form-label">NID</label>
+                            <label for="nid" class="form-label fw-semibold">NID</label>
                             <input type="text" class="form-control" id="nid" name="nid" value="<?php echo $user['nid']; ?>" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="<?php echo $user['email']; ?>" required readonly>
+                            <label for="email" class="form-label fw-semibold">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="<?php echo $user['email']; ?>" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label for="dob" class="form-label">Date of Birth</label>
+                            <label for="dob" class="form-label fw-semibold">Date of Birth</label>
                             <input type="date" class="form-control" id="dob" name="dob" value="<?php echo $user['dob']; ?>" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
+                            <label for="phone" class="form-label fw-semibold">Phone</label>
                             <input type="text" class="form-control" id="phone" name="phone" value="<?php echo $user['phone']; ?>" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
+                            <label for="address" class="form-label fw-semibold">Address</label>
                             <textarea class="form-control" id="address" name="address" rows="3" required><?php echo $user['address']; ?></textarea>
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-success">Update Profile</button>
-                            <a href="auth/logout.php" class="btn btn-danger">Logout</a>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-success px-4">Update Profile</button>
+                            <a href="logout.php" class="btn btn-outline-danger px-4">Logout</a>
                         </div>
                     </form>
                 </div>
@@ -163,5 +175,5 @@
         </div>
     </div>
 
-    <?php include 'template/footer.php'; ?>
+    <?php include ROOT_PATH . 'template/footer.php'; ?>
 </body>

@@ -115,6 +115,10 @@ body {
     filter: invert(1);
 }
 
+.guide-image {
+    height: 320px !important;
+}
+
 /* DESTINATIONS */
 .hero-container {
     height: 70vh;
@@ -187,6 +191,10 @@ body {
 /* Auth */
 .profile {
     background: linear-gradient(to bottom right, #00aaff, #66ccff, #1c85ee);
+}
+
+.profile-picture-container:hover .upload-overlay {
+    opacity: 1;
 }
 
 /* Footer */

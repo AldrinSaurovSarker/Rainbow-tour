@@ -1,13 +1,14 @@
-<?php include 'template/header.php'; ?>
-<?php include 'db/connect-db.php'; ?>
-<?php include 'auth/connect-session.php'; ?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
+<?php include ROOT_PATH . 'db/connect-db.php'; ?>
+<?php include ROOT_PATH . 'auth/connect-session.php'; ?>
 
 <body>
-    <?php include 'template/navigation.php'; ?>
+    <?php include ROOT_PATH . 'template/navigation.php'; ?>
 
     <div class="hero-container d-flex align-items-center justify-content-center text-center text-white"
         style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
-           url('images/banners/destinations-banner.jpg') center/cover no-repeat;">
+           url('<?= BASE_URL ?>images/banners/destinations-banner.jpg') center/cover no-repeat;">
         <div class="hero-content">
             <h1 class="display-3 fw-bold">Destinations</h1>
         </div>
@@ -34,7 +35,7 @@
                         echo '
                         <div class="col-lg-4 col-md-6 d-flex justify-content-center">
                             <a href="destination-details.php?item='.urlencode($destination_name).'" class="text-decoration-none">
-                                <div class="circle-item position-relative" style="background-image: url('.$gallery_url.');">
+                                <div class="circle-item position-relative" style="background-image: url(' . BASE_URL . $gallery_url . ');">
                                     <div class="overlay"></div>
                                     <h1 class="text-white text-center position-absolute w-100">'.$destination_name.'</h1>
                                 </div>
@@ -51,5 +52,5 @@
         </div>
     </div>
 
-    <?php include 'template/footer.php'; ?>
+    <?php include ROOT_PATH . 'template/footer.php'; ?>
 </body>

@@ -1,6 +1,7 @@
 <?php
-    include '../db/connect-db.php';
-    include '../auth/connect-session.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php';
+    include ROOT_PATH . 'db/connect-db.php';
+    include ROOT_PATH . 'auth/connect-session.php';
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $name = mysqli_real_escape_string($conn, $_POST['name']);
@@ -19,7 +20,7 @@
         }
 
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $email_query = "SELECT * FROM tourists WHERE email = '$email' UNION SELECT * FROM staffs WHERE email = '$email'";
+        $email_query = "SELECT email FROM tourists WHERE email = '$email' UNION SELECT email FROM staffs WHERE email = '$email'";
         $email_result = mysqli_query($conn, $email_query);
 
         if ($email_result && mysqli_num_rows($email_result) > 0) {

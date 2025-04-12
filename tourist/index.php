@@ -1,6 +1,7 @@
-<?php include 'template/header.php'; ?>
-<?php include 'db/connect-db.php'; ?>
-<?php include 'auth/connect-session.php'; ?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
+<?php include ROOT_PATH . 'db/connect-db.php'; ?>
+<?php include ROOT_PATH . 'auth/connect-session.php'; ?>
 
 <?php
     $query = "SELECT name, email, phone, image, role FROM staffs WHERE availability = 1";
@@ -8,13 +9,13 @@
 ?>
 
 <body>
-    <?php include 'template/navigation.php'; ?>
+    <?php include ROOT_PATH . 'template/navigation.php'; ?>
 
     <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <div class="carousel-image-container">
-                    <img src="images/banners/banner-1.jpeg" class="d-block w-100" alt="Image 1">
+                    <img src="<?= BASE_URL ?>images/banners/banner-1.jpeg" class="d-block w-100" alt="Image 1">
                     <div class="overlay"></div>
                     <div class="carousel-caption d-flex align-items-center justify-content-center">
                         <div class="text-center text-light">
@@ -27,7 +28,7 @@
             
             <div class="carousel-item">
                 <div class="carousel-image-container">
-                    <img src="images/banners/banner-2.jpg" class="d-block w-100" alt="Image 2">
+                    <img src="<?= BASE_URL ?>images/banners/banner-2.jpg" class="d-block w-100" alt="Image 2">
                     <div class="overlay"></div>
                     <div class="carousel-caption d-flex align-items-center justify-content-center">
                         <div class="text-center text-light">
@@ -58,7 +59,7 @@
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="card shadow-lg border-0">
-                    <img src="images/banners/why-us-banner-1.jpg" class="card-img-top" alt="Icon 1">
+                    <img src="<?= BASE_URL ?>images/banners/why-us-banner-1.jpg" class="card-img-top" alt="Icon 1">
                     <div class="card-body">
                         <h5 class="card-title">Expert Travel Guides</h5>
                         <p class="card-text">Our experienced and friendly guides ensure you have an unforgettable journey.</p>
@@ -68,7 +69,7 @@
 
             <div class="col-md-4 mb-4">
                 <div class="card shadow-lg border-0">
-                    <img src="images/banners/why-us-banner-2.jpg" class="card-img-top" alt="Icon 2">
+                    <img src="<?= BASE_URL ?>images/banners/why-us-banner-2.jpg" class="card-img-top" alt="Icon 2">
                     <div class="card-body">
                         <h5 class="card-title">Affordable Packages</h5>
                         <p class="card-text">We offer competitive prices for all our tour packages, without compromising quality.</p>
@@ -78,7 +79,7 @@
 
             <div class="col-md-4 mb-4">
                 <div class="card shadow-lg border-0">
-                    <img src="images/banners/why-us-banner-3.jpg" class="card-img-top" alt="Icon 3">
+                    <img src="<?= BASE_URL ?>images/banners/why-us-banner-3.jpg" class="card-img-top" alt="Icon 3">
                     <div class="card-body">
                         <h5 class="card-title">24/7 Customer Support</h5>
                         <p class="card-text">We are available around the clock to assist you with any travel-related concerns.</p>
@@ -98,7 +99,7 @@
             <?php while($staff = mysqli_fetch_assoc($staffs)): ?>
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-lg border-0">
-                        <img src="<?php echo $staff['image']; ?>" class="card-img-top img-fluid" alt="Guide Image">
+                    <img src="<?= BASE_URL . (!empty($staff['image']) ? $staff['image'] : 'images/banners/default-user.png') ?>" class="guide-image img-fluid w-100" alt="Guide Image">
                         <div class="card-body text-center">
                             <h4 class="card-title text-primary fw-bold"><?php echo $staff['name']; ?></h4>
                             <h6 class="card-title text-muted"><?php echo $staff['role']; ?></h6>
@@ -119,7 +120,7 @@
         </div>
     </div>
 
-    <?php include 'template/footer.php'; ?>
+    <?php include ROOT_PATH . 'template/footer.php'; ?>
 </body>
 
 </html>

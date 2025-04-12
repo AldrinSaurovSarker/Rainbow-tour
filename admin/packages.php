@@ -1,44 +1,71 @@
 <?php include '../template/header.php'; ?>
 <?php include '../db/connect-db.php'; ?>
 <?php include '../auth/connect-session.php'; ?>
+<?php include '../constants.php'; ?>
 
 <?php
     if (isset($_POST['add_package'])) {
         $name = $conn->real_escape_string($_POST['pkg_name']);
         $duration = (int)$_POST['pkg_duration'];
         $price = (float)$_POST['pkg_price'];
+        $imagePath = null;
+    
+        if (!empty($_FILES['cover_photo']['name'])) {
+            $coverTmpName = $_FILES['cover_photo']['tmp_name'];
+            $coverOriginalName = basename($_FILES['cover_photo']['name']);
+            $coverUniqueName = time() . '_' . $coverOriginalName;
+            $coverTargetPath = $PACKAGE_IMAGE_UPLOAD_DIR . $coverUniqueName;
+    
+            if (move_uploaded_file($coverTmpName, $coverTargetPath)) {
+                $imagePath = $PACKAGE_IMAGE_URL . $coverUniqueName;
+            }
+        }
 
-        $conn->query("INSERT INTO tour_packages (name, duration_in_days, price) VALUES ('$name', $duration, $price)");
+        $conn->query("INSERT INTO tour_packages (name, duration_in_days, price, image) VALUES ('$name', $duration, $price, '$imagePath')");
+    
         $pkg_id = $conn->insert_id;
-
+    
         if (!empty($_POST['destinations'])) {
             foreach ($_POST['destinations'] as $dest_id) {
                 $conn->query("INSERT INTO destination_packages (destination_id, package_id) VALUES ($dest_id, $pkg_id)");
             }
         }
-
+    
         echo "<script>location.href='packages.php';</script>";
         exit;
-    }
+    }    
 
     if (isset($_POST['update_package'])) {
         $id = (int)$_POST['pkg_id'];
         $name = $conn->real_escape_string($_POST['pkg_name']);
         $duration = (int)$_POST['pkg_duration'];
         $price = (float)$_POST['pkg_price'];
-
-        $conn->query("UPDATE tour_packages SET name='$name', duration_in_days=$duration, price=$price WHERE id=$id");
+    
+        $imagePath = null;
+    
+        if (!empty($_FILES['cover_photo']['name'])) {
+            $coverTmpName = $_FILES['cover_photo']['tmp_name'];
+            $coverOriginalName = basename($_FILES['cover_photo']['name']);
+            $coverUniqueName = time() . '_' . $coverOriginalName;
+            $coverTargetPath = $PACKAGE_IMAGE_UPLOAD_DIR . $coverUniqueName;
+    
+            if (move_uploaded_file($coverTmpName, $coverTargetPath)) {
+                $imagePath = $PACKAGE_IMAGE_URL . $coverUniqueName;
+            }
+        }
+    
+        $conn->query("UPDATE tour_packages SET name='$name', duration_in_days=$duration, price=$price, image='$imagePath' WHERE id=$id");
         $conn->query("DELETE FROM destination_packages WHERE package_id = $id");
-
+    
         if (!empty($_POST['destinations'])) {
             foreach ($_POST['destinations'] as $dest_id) {
                 $conn->query("INSERT INTO destination_packages (destination_id, package_id) VALUES ($dest_id, $id)");
             }
         }
-
+    
         echo "<script>location.href='packages.php';</script>";
         exit;
-    }
+    }    
 
     if (isset($_GET['delete_package'])) {
         $id = (int) $_GET['delete_package'];
@@ -70,7 +97,6 @@
         echo "<script>location.href='packages.php';</script>";
         exit;
     }
-    
 ?>
 
 <head>
@@ -131,37 +157,49 @@
                         <?php endwhile; ?>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editPkg<?= $row['id'] ?>">
-                            <i class="fas fa-pencil-alt"> Edit</i>
-                        </button>
-                        <a href="?delete_package=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this package?')">
-                            <i class="fas fa-trash-alt"> Delete</i>
-                        </a>
+                        <div class="d-flex align-items-center h-100 gap-2">
+                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal-packages<?= $row['id'] ?>">
+                                <i class="fas fa-pencil-alt"> Edit</i>
+                            </button>
+
+                            <a href="?delete_package=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this package?')">
+                                <i class="fas fa-trash-alt"> Delete</i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
 
-                <div class="modal fade" id="editPkg<?= $row['id'] ?>" tabindex="-1">
+                <div class="modal fade" id="editModal-packages<?= $row['id'] ?>" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
-                            <form method="POST">
+                            <form method="POST" enctype="multipart/form-data">
                                 <input type="hidden" name="pkg_id" value="<?= $row['id'] ?>">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Edit Package</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
+
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label>Package Name</label>
+                                        <label>Package Name*</label>
                                         <input type="text" name="pkg_name" value="<?= htmlspecialchars($row['name']) ?>" class="form-control" required>
                                     </div>
+
                                     <div class="mb-3">
-                                        <label>Duration (Days)</label>
+                                        <label>Select Cover Photo</label>
+                                        <input type="file" name="cover_photo" class="form-control" accept="image/*">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label>Duration (Days)*</label>
                                         <input type="number" name="pkg_duration" min="1" value="<?= $row['duration_in_days'] ?>" class="form-control" required>
                                     </div>
+
                                     <div class="mb-3">
-                                        <label>Price</label>
+                                        <label>Price*</label>
                                         <input type="number" name="pkg_price" min="0" value="<?= $row['price'] ?>" class="form-control" step="0.01" required>
                                     </div>
+
                                     <div class="mb-3">
                                         <label>Select Destinations</label>
                                         <div class="d-flex flex-wrap gap-2 border rounded p-3">
@@ -199,24 +237,32 @@
         <div class="modal fade" id="addModal-packages" tabindex="-1">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         <div class="modal-header">
                             <h5 class="modal-title">Add Package</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label>Package Name</label>
+                                <label>Package Name*</label>
                                 <input type="text" name="pkg_name" class="form-control" required>
                             </div>
+
                             <div class="mb-3">
-                                <label>Duration (Days)</label>
+                                <label>Select Cover Photo</label>
+                                <input type="file" name="cover_photo" class="form-control" accept="image/*">
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Duration (Days)*</label>
                                 <input type="number" name="pkg_duration" class="form-control" value="1" min="1" required>
                             </div>
+
                             <div class="mb-3">
-                                <label>Price</label>
+                                <label>Price*</label>
                                 <input type="number" name="pkg_price" class="form-control" min="0" step="0.01" required>
                             </div>
+
                             <div class="mb-3">
                                 <label>Select Destinations</label>
                                 <div class="d-flex flex-wrap gap-2 border rounded p-3">

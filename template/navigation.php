@@ -1,5 +1,5 @@
 <?php
-    $redirect_url = isset($_SESSION['user']) ? './profile.php' : './auth/login.php';
+    $redirect_url = isset($_SESSION['user']) ? BASE_URL . 'auth/profile.php' : BASE_URL . 'auth/login.php';
 ?>
 
 <div class="top-nav d-flex align-items-center justify-content-between w-100">
@@ -59,7 +59,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light px-5">
     <div class="container-fluid">
-        <img class="img-fluid navbar-logo" src="images/banners/logo.png">
+        <img class="img-fluid navbar-logo" src="<?= BASE_URL ?>images/banners/logo.png">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -68,15 +68,15 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item p-2 <?php echo (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : ''; ?>">
-                    <a class="nav-link" href="index.php"><b>Home</b></a>
+                    <a class="nav-link" href="<?= BASE_URL ?>tourist/index.php"><b>Home</b></a>
                 </li>
 
                 <li class="nav-item p-2 <?php echo (basename($_SERVER['PHP_SELF']) == 'destinations.php') ? 'active' : ''; ?>">
-                    <a class="nav-link" href="destinations.php"><b>Destinations</b></a>
+                    <a class="nav-link" href="<?= BASE_URL ?>tourist/destinations.php"><b>Destinations</b></a>
                 </li>
 
                 <li class="nav-item p-2 <?php echo (basename($_SERVER['PHP_SELF']) == 'tours.php') ? 'active' : ''; ?>">
-                    <a class="nav-link" href="tours.php"><b>Tours</b></a>
+                    <a class="nav-link" href="<?= BASE_URL ?>tourist/tours.php"><b>Tours</b></a>
                 </li>
             </ul>
         </div>

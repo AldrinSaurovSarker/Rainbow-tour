@@ -1,5 +1,6 @@
 <?php
-    include 'db/connect-db.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php';
+    include ROOT_PATH . 'db/connect-db.php';
 
     $query_string1 = "SELECT tp.id, COUNT(b.id) AS booking_count
                       FROM tour_packages tp
@@ -215,7 +216,10 @@
                             <span class="badge bg-primary">৳<?= htmlspecialchars($row['price']) ?>/per person</span>
                         </div>
 
-                        <img src="<?= htmlspecialchars($row['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($row['name']) ?>">
+                        <?php
+                            $imagePath = BASE_URL . (!empty($row['image']) ? $row['image'] : 'images/banners/default-package-cover.png');
+                        ?>
+                        <img src="<?= htmlspecialchars($imagePath) ?>" class="card-img-top" alt="<?= htmlspecialchars($row['name']) ?>">
                     </div>
 
                     <div class="card-body text-center d-flex flex-column">

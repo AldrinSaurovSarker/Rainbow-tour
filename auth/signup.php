@@ -1,6 +1,7 @@
-<?php include '../template/header.php'; ?>
-<?php include '../db/connect-db.php'; ?>
-<?php include '../auth/connect-session.php'; ?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
+<?php include ROOT_PATH . 'db/connect-db.php'; ?>
+<?php include ROOT_PATH . 'auth/connect-session.php'; ?>
 
 <?php
     if (isset($_SESSION['error'])) {
@@ -9,12 +10,8 @@
     }
 ?>
 
-<head>
-    <link href="../images/banners/icon.png" rel="icon">
-</head>
-
 <body class="d-flex align-items-center justify-content-center vh-100 signup-cover" style="background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
-                url('../images/destinations/tanguar-haor-1.jpeg') center/cover no-repeat;">
+                url('<?= BASE_URL ?>images/destinations/tanguar-haor-1.jpeg') center/cover no-repeat;">
     <div class="card text-white bg-info p-4 shadow-lg" style="max-width: 600px;">
         <h2 class="text-center fw-bold">Sign Up</h2>
 

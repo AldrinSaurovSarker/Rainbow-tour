@@ -1,8 +1,9 @@
-<?php 
-	include '../template/header.php'; 
-  	include '../db/connect-db.php'; 
-  	include '../auth/connect-session.php'; 
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
+<?php include ROOT_PATH . 'db/connect-db.php'; ?>
+<?php include ROOT_PATH . 'auth/connect-session.php'; ?>
 
+<?php 
   	if (isset($_POST['add_schedule'])) {
 		$transport_type      = $conn->real_escape_string($_POST['transport_type']);
 		$company             = $conn->real_escape_string($_POST['company']);
