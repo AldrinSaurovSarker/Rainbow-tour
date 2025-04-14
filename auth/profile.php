@@ -1,15 +1,21 @@
-<?php
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php';
-    include ROOT_PATH . 'db/connect-db.php';
-    include ROOT_PATH . 'auth/connect-session.php';
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/utils/constants.php'; ?>
+<?php include ROOT_PATH . 'template/header.php'; ?>
+<?php include ROOT_PATH . 'db/connect-db.php'; ?>
+<?php include ROOT_PATH . 'auth/connect-session.php'; ?>
+<?php include ROOT_PATH . 'auth/manage-access.php'; ?>
 
-    if (!isset($_SESSION['user'])) {
+<?php
+    if (!$logged_in) {
         header("Location: login.php");
         exit();
     }
-
-    $user_email = $_SESSION['user'];
-    $query = "SELECT * FROM tourists WHERE email = '$user_email'";
+    
+    $query = "SELECT id, name, nid, email, dob, phone, address, image
+              FROM tourists WHERE email = '$user_email' 
+              UNION 
+              SELECT id, name, nid, email, dob, phone, address, image
+              FROM staffs 
+              WHERE email = '$user_email'";
     $result = mysqli_query($conn, $query);
     $user = mysqli_fetch_assoc($result);
 
@@ -19,16 +25,46 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        echo "<script>alert('Something went wrong. Please try again.');</script>";
+
         $name = mysqli_real_escape_string($conn, $_POST['name']);
         $nid = mysqli_real_escape_string($conn, $_POST['nid']);
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $dob = mysqli_real_escape_string($conn, $_POST['dob']);
         $phone = mysqli_real_escape_string($conn, $_POST['phone']);
         $address = mysqli_real_escape_string($conn, $_POST['address']);
-        
-        $update_query = "UPDATE tourists 
-                        SET name = '$name', nid = '$nid', email = '$email', dob = '$dob', phone = '$phone', address = '$address' 
-                        WHERE email = '$user_email'";
+        $imagePath = null;
+    
+        if (!empty($_FILES['profile_image']['name'])) {
+            $coverTmpName = $_FILES['profile_image']['tmp_name'];
+            $coverOriginalName = basename($_FILES['profile_image']['name']);
+            $coverUniqueName = time() . '_' . $coverOriginalName;
+            $coverTargetPath = $PROFILE_IMAGE_UPLOAD_DIR . $coverUniqueName;
+
+            if (!is_dir($PROFILE_IMAGE_UPLOAD_DIR)) {
+                mkdir($PROFILE_IMAGE_UPLOAD_DIR, 0755, true);
+            }
+    
+            if (move_uploaded_file($coverTmpName, $coverTargetPath)) {
+                $imagePath = $PROFILE_IMAGE_URL . $coverUniqueName;
+            }
+        }
+
+        $update_query = $is_admin ? "UPDATE staffs " : "UPDATE tourists ";
+
+        $update_query .= "SET 
+                            name = '$name',
+                            nid = '$nid',
+                            email = '$email',
+                            dob = '$dob',
+                            phone = '$phone',
+                            address = '$address'";
+
+        if (!empty($imagePath)) {
+            $update_query .= ", image = '$imagePath'";
+        }
+
+        $update_query .= " WHERE email = '$user_email'";
 
         if (mysqli_query($conn, $update_query)) {
             $_SESSION['success'] = "Profile updated successfully.";
@@ -40,10 +76,9 @@
     }
 ?>
 
-<?php include ROOT_PATH . 'template/header.php'; ?>
-
 <body class="profile">
     <?php include ROOT_PATH . 'template/navigation.php'; ?>
+
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -105,36 +140,35 @@
 
             <div class="col-md-4">
                 <div class="card shadow-lg p-4">
-                    <div class="text-center mb-4 position-relative">
-                        <div class="profile-picture-container mx-auto mb-3 position-relative" style="width: 150px; height: 150px;">
-                            <img 
-                                src="<?php echo !empty($user['image']) ? BASE_URL . $user['image'] : BASE_URL . 'images/banners/default-user.png'; ?>" 
-                                alt="Profile Picture" 
-                                class="rounded-circle border border-3 shadow" 
-                                style="width: 100%; height: 100%; object-fit: cover;"
-                            >
-                            <div class="upload-overlay d-flex align-items-center justify-content-center rounded-circle text-white fw-semibold"
-                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); opacity: 0; transition: 0.3s; cursor: pointer;">
-                                Upload Photo
-                                <input type="file" name="profile_image" class="position-absolute w-100 h-100" style="opacity: 0; cursor: pointer;" onchange="this.form.submit()">
-                            </div>
-                        </div>
-                        <h3 class="fw-bold">Profile Information</h3>
-                    </div>
-
-                    <?php if (isset($_SESSION['success'])): ?>
-                        <div class="alert alert-success">
-                            <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if (isset($_SESSION['error'])): ?>
-                        <div class="alert alert-danger">
-                            <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
-                        </div>
-                    <?php endif; ?>
-
                     <form method="POST" enctype="multipart/form-data">
+                        <div class="text-center mb-4 position-relative">
+                            <div class="profile-picture-container mx-auto mb-3 position-relative" style="width: 150px; height: 150px;">
+                                <img 
+                                    src="<?php echo !empty($user['image']) ? BASE_URL . $user['image'] : BASE_URL . 'images/banners/default-user.png'; ?>" 
+                                    alt="Profile Picture" 
+                                    class="rounded-circle border border-3 shadow" 
+                                    style="width: 100%; height: 100%; object-fit: cover;"
+                                >
+                                <div class="upload-overlay d-flex align-items-center justify-content-center rounded-circle text-white fw-semibold">
+                                    Upload Photo
+                                    <input type="file" name="profile_image" class="profile-picture position-absolute w-100 h-100" onchange="this.form.submit()">
+                                </div>
+                            </div>
+                            <h3 class="fw-bold">Profile Information</h3>
+                        </div>
+
+                        <?php if (isset($_SESSION['success'])): ?>
+                            <div class="alert alert-success">
+                                <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (isset($_SESSION['error'])): ?>
+                            <div class="alert alert-danger">
+                                <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="mb-3">
                             <label for="name" class="form-label fw-semibold">Name</label>
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo $user['name']; ?>" required>

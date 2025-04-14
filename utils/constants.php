@@ -7,4 +7,7 @@
 
     $PACKAGE_IMAGE_URL = 'images/packages/';
     $PACKAGE_IMAGE_UPLOAD_DIR = $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/' . $PACKAGE_IMAGE_URL;
+
+    $PROFILE_IMAGE_URL = 'images/users/';
+    $PROFILE_IMAGE_UPLOAD_DIR = $_SERVER['DOCUMENT_ROOT'] . '/rainbow-tour/' . $PROFILE_IMAGE_URL;
 ?>

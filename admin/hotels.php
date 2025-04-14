@@ -2,6 +2,14 @@
 <?php include ROOT_PATH . 'template/header.php'; ?>
 <?php include ROOT_PATH . 'db/connect-db.php'; ?>
 <?php include ROOT_PATH . 'auth/connect-session.php'; ?>
+<?php include ROOT_PATH . 'auth/manage-access.php'; ?>
+
+<?php
+    if (!$admin) {
+        header("Location: " . BASE_URL . "tourist/index.php");
+        exit();
+    }
+?>
 
 <?php 
     if (isset($_POST['add_hotel'])) {
@@ -51,12 +59,9 @@
     }
 ?>
 
-<head>
-    <link href="../images/banners/icon.png" rel="icon">
-    <link href="admin-style.css" rel="stylesheet" />
-</head>
-
 <body class="bg-info">
+    <?php include ROOT_PATH . 'template/navigation.php'; ?>
+
     <div class="container admin-container my-5">
         <div class="d-flex mb-4">
             <h2>Admin Panel</h2>

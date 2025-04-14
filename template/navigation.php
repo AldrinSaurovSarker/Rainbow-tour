@@ -1,5 +1,7 @@
+<?php include ROOT_PATH . 'auth/manage-access.php'; ?>
+
 <?php
-    $redirect_url = isset($_SESSION['user']) ? BASE_URL . 'auth/profile.php' : BASE_URL . 'auth/login.php';
+    $redirect_url = $logged_in ? BASE_URL . 'auth/profile.php' : BASE_URL . 'auth/login.php';
 ?>
 
 <div class="top-nav d-flex align-items-center justify-content-between w-100">
@@ -67,6 +69,12 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto">
+                <?php if ($is_admin): ?>
+                    <li class="nav-item p-2 <?php echo (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : ''; ?>">
+                        <a class="nav-link" href="<?= BASE_URL ?>admin/dashboard.php"><b>Dashboard</b></a>
+                    </li>
+                <?php endif; ?>
+
                 <li class="nav-item p-2 <?php echo (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : ''; ?>">
                     <a class="nav-link" href="<?= BASE_URL ?>tourist/index.php"><b>Home</b></a>
                 </li>

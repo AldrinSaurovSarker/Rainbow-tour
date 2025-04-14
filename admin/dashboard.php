@@ -2,19 +2,19 @@
 <?php include ROOT_PATH . 'template/header.php'; ?>
 <?php include ROOT_PATH . 'db/connect-db.php'; ?>
 <?php include ROOT_PATH . 'auth/connect-session.php'; ?>
+<?php include ROOT_PATH . 'auth/manage-access.php'; ?>
 
-<head>
-	<link href="../images/banners/icon.png" rel="icon">
-	<style>
-		.card-hover:hover {
-			transform: scale(1.05);
-			transition: transform 0.3s ease-in-out;
-		}
-	</style>
-</head>
+<?php
+	if (!$admin) {
+		header("Location: " . BASE_URL . "tourist/index.php");
+		exit();
+	}
+?>
 
 <body class="bg-info">
-	<div class="container my-5">
+	<?php include ROOT_PATH . 'template/navigation.php'; ?>
+	
+	<div class="container dashboard my-5">
 		<h2 class="mb-4">Admin Dashboard</h2>
 		<div class="row row-cols-1 row-cols-md-3 g-4">
 			<div class="col">
