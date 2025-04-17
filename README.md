@@ -11,6 +11,6 @@
 
 4. Go to __http://localhost/phpmyadmin/index.php__ in your browser.
 
-5. In phpMyAdmin, go to the SQL tab. From the project folder, open __Rainbow-tour/db/ddl.php__ and __Rainbow-tour/db/dml.php__, then copy and paste their contents into the SQL query window in phpMyAdmin and click Go.
+5. In phpMyAdmin, go to the SQL tab. Copy the contents of __C:\xampp\htdocs\rainbow-tour\db\ddl.sql__ and __C:\xampp\htdocs\rainbow-tour\db\dml.sql__ and press GO
 
 6. Finally, go to __http://localhost/rainbow-tour/tourist/__ in your browser.
